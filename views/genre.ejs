@@ -1,0 +1,31 @@
+<br>
+
+<table class="table table-borderless table-striped">
+  <thead>
+    <th>Music Genre</th>
+  </thead>
+  <tbody>
+    <% for (item of kpopGenre){%>
+      <tr>
+        <td> <%= item.genre %> </td> 
+        <td> <%= item.intro %> </td>
+      </tr>
+    <% } %>  
+    <tr> <td> ... </td> </tr>
+  </tbody>
+</table>
+
+<br>
+
+
+<h3>Choose a genre to explore </h3>
+<form method="post" action="/genre">
+  <select name="choosegenre">
+    <% for (item of kpopGenre){%>
+      <option>
+        <%= item.genre %>
+      </option>
+     <% } %> 
+  </select>
+  <input type="submit" />
+</form>

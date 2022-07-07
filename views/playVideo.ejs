@@ -1,0 +1,13 @@
+<br>
+<% for (item of kpopGenre){%>
+    <%if (item.genre == choosegenre) { %>
+        <h4> <i> Genre </i> : <%= item.genre %> </h4>
+        <h4> <i> Song name</i> : <%= item.song %> </h4>
+        <h4> <i> Artist </i> : <%= item.artist %> </h4>
+        <%- item.url %>
+    <% } %>
+<% } %>  
+
+
+  
+
