@@ -9,10 +9,10 @@ There are three main features:
   
 AddToQueue also supports signup/login feature. All three features can only be accessed when logged in.
 
-Instructions:
-(Before starting, you should have npm and nodemon installed on your computer)
-First, download the whole repository to your computer and save in a file folder. 
-Then, open PowerShell(Windows)/terminal(Mac) and cd to the folder where you saved this repository.
-Type "nodemon" and have nodemon running.
-Open web browser and type "localhost:4000" in bar.
-Voilà! Welcome to AddToQueue! I hope you enjoy playing with the website and K-POP.
+Instructions:                                                                                                    
+(Before starting, you should have npm and nodemon installed on your computer)                                                                                   
+First, download the whole repository to your computer and save in a file folder.                                                                                     
+Then, open PowerShell(Windows)/terminal(Mac) and cd to the folder where you saved this repository.                                                                     
+Type "nodemon" and have nodemon running.                                                                                          
+Open web browser and type "localhost:4000" in bar.                                                                                          
+Voilà! Welcome to AddToQueue! I hope you enjoy playing with the website and K-POP.                                                                                      
