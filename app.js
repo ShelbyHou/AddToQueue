@@ -5,12 +5,63 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const layouts = require("express-ejs-layouts");
 const axios = require('axios');
+const auth = require('./routes/auth');
 const session = require("express-session"); 
+const MongoDBStore = require('connect-mongodb-session')(session);
+
+
+//MONGOOSE
+const mongoose = require( 'mongoose' );
+const mongodb_URI = 'mongodb://localhost:27017'
+//MongoDB not working good
+//const mongodb_URI = 'mongodb+srv://cs_sj:BrandeisSpr22@cluster0.kgugl.mongodb.net/tjhickey?retryWrites=true&w=majority'
+//connect to cloud
+
+mongoose.connect( mongodb_URI, { useNewUrlParser: true, useUnifiedTopology: true } );
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {console.log("we are connected!!!")});
+
+// middleware to test is the user is logged in, and if not, send them to the login page
+const isLoggedIn = (req,res,next) => {
+  if (res.locals.loggedIn) {
+    next()
+  }
+  else res.redirect('/login')
+}
+
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const queue = require('./routes/queue');
 
 var app = express();
+
+var store = new MongoDBStore({
+  uri: mongodb_URI,
+  collection: 'mySessions'
+});
+
+// Catch errors
+store.on('error', function(error) {
+  console.log(error);
+});
+
+app.use(require('express-session')({
+  secret: 'sectet code is KazuhaXiaoYoimiya',
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 3 // 3 days
+  },
+  store: store,
+  // Boilerplate options, see:
+  // * https://www.npmjs.com/package/express-session#resave
+  // * https://www.npmjs.com/package/express-session#saveuninitialized
+  resave: true,
+  saveUninitialized: true
+}));
+
 
 
 // view engine setup
@@ -23,6 +74,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(auth);
+app.use(queue);
+//must be put afterapp.use(express.json()); or undefined error
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -60,13 +115,12 @@ const kpopGenre = [
    song:'90s Love',artist:'NCT U',
    intro:'From the \'80s to \'90s, hip hop experienced its Golden Age where innovative artists were changing the genre with every release.',
   },
-  {genre:'Electronic',
+  {genre:'Contemporary R&B',
    url:'<iframe width="1352" height="624" src="https://www.youtube.com/embed/X-iJZ0gfKPo" title="NCT DREAM 엔시티 드림 \'BOOM\' MV" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>',
-   song:'Contemporary R&B',artist:'NCT Dream',
+   song:'Boom',artist:'NCT Dream',
    intro:'Contemporary R&B is a popular music genre that combines rhythm and blues with elements of pop, soul, funk, hip hop, and electronic music. The genre features a distinctive record production style, drum machine-backed rhythms, pitch corrected vocals, and a smooth, lush style of vocal arrangement. Electronic influences are becoming an increasing trend and the use of hip hop or dance-inspired beats are typical, although the roughness and grit inherent in hip hop may be reduced and smoothed out.',
   },
 ];
-
 
 app.get('/genre',
   (req,res,next) => {
@@ -75,18 +129,38 @@ app.get('/genre',
 })
 
 app.post('/genre',
+  isLoggedIn,
   async (req,res,next) => {
-    res.locals.choosegenre = req.body.choosegenre;
-    res.locals.kpopGenre = kpopGenre;
-    res.locals.version = '1.0.0';
-    res.render('playVideo');
+      res.locals.choosegenre = req.body.choosegenre;
+      res.locals.kpopGenre = kpopGenre;
+      res.locals.version = '1.0.0';
+      res.render('playVideo');
 });
 
 
-const idols = require('./public/data/idols.json')
+const idoldata = require('./public/data/idols.json');
+const { log } = require('console');
+// var koreanName = "Korean Name"
+// var birthdate = "Date of Birth"
+
+
+app.get('/idols', 
+  (req,res,next) => {res.render('idols')})
 
 
 
+app.post('/idols',
+  isLoggedIn,
+  async (req,res,next) => {
+    try{
+      res.locals.idol = req.body.idol;
+      const aboutIdol = idoldata.find(({StageName}) => StageName === req.body.idol);
+      res.locals.aboutIdol = aboutIdol
+      res.render('idolInfo');
+    }catch(e){
+      next(e)
+    }
+});
 
 
 

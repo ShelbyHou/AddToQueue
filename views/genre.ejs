@@ -1,6 +1,26 @@
+
+<h3>Choose a genre to explore </h3>
+<form method="post" action="/genre">
+  <select name="choosegenre">
+    <% for (item of kpopGenre){%>
+      <option>
+        <%= item.genre %>
+      </option>
+     <% } %> 
+  </select>
+  <input type="submit" />
+</form>
+<br>
+<br>
 <br>
 
-<table class="table table-borderless table-striped">
+<img width="700" src="https://1.bp.blogspot.com/-JDCTPprE7Zs/Xuok-f61u9I/AAAAAAAAILg/BRrd-fWAW5QErDY2apOacsRicYA5jQDaQCK4BGAsYHg/s1280/K-Pop%2BDaebak.jpg" 
+ class="rounded mx-auto d-block" alt="genre">
+
+<br>
+<br>
+<br>
+<table class="table table-borderless table-striped" style="background-color: #e3f2fd;">
   <thead>
     <th>Music Genre</th>
   </thead>
@@ -14,18 +34,4 @@
     <tr> <td> ... </td> </tr>
   </tbody>
 </table>
-
 <br>
-
-
-<h3>Choose a genre to explore </h3>
-<form method="post" action="/genre">
-  <select name="choosegenre">
-    <% for (item of kpopGenre){%>
-      <option>
-        <%= item.genre %>
-      </option>
-     <% } %> 
-  </select>
-  <input type="submit" />
-</form>
